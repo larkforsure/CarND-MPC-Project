@@ -2,6 +2,52 @@
 Self-Driving Car Engineer Nanodegree Program
 
 ---
+## Reflections
+
+### Recored video
+https://www.youtube.com/watch?v=fYPr2W1bCiU
+
+### Model
+States:
+  x, y, psi, v, cte, epsi
+
+Actuators:
+  steering, throttle(accelaration)
+
+Constraints:
+  based on the following update equations:
+    x_[t+1] = x[t] + v[t] * cos(psi[t]) * dt
+    y_[t+1] = y[t] + v[t] * sin(psi[t]) * dt
+    psi_[t+1] = psi[t] + v[t] / Lf * delta[t] * dt
+    v_[t+1] = v[t] + a[t] * dt
+    cte[t+1] = f(x[t]) - y[t] + v[t] * sin(epsi[t]) * dt
+    epsi[t+1] = psi[t] - psides[t] + v[t] * delta[t] / Lf * dt
+
+Costs:
+  the cost based on the expect states
+    expect v(speed)=90
+    expect cte=0
+    expect epsi=0
+  the cost based on the actuators to minimize their magnitutes
+  the cost based on the continuous actuators to minimize the variations between sequential actuations
+
+Solution function:
+  the target is to find actuators to minimize the costs while restricted by the constraints
+
+### dt & N
+Set N=10, dt=0.08
+A larger N would give over-fit predications and go off the road around the complex corner; a smaller N would give under-fit otherwises ( i.e. doesn't fit the reference line at all )
+A smarller dt would give too much shaking
+
+### Handle the latency
+With the following equations, "move"(predicate) the received state to the values 0.1s later
+
+    double latency = 0.1;
+    px = px + v * cos(psi) * latency;
+    py = py + v * sin(psi) * latency;
+    psi = psi - v*steer_value/Lf*latency; // simulator gives back negative steering!
+    v += throttle_value*latency;
+
 
 ## Dependencies
 
