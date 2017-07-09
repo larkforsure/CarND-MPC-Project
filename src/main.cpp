@@ -91,7 +91,9 @@ int main() {
         double py = j[1]["y"];
         double psi = j[1]["psi"];
         double v = j[1]["speed"];
-
+    
+        v *= 0.44704; // mph to meter per second
+        
         /*
          * TODO: Calculate steering angle and throttle using MPC.
          *
@@ -114,7 +116,7 @@ int main() {
         psi = psi - v*steer_value/Lf*latency; // negative steering!
         v += throttle_value*latency;
 
-
+        // convert waypoints to car coordinates
         for (size_t i = 0; i < ptsx.size(); i++){
             double shift_x = ptsx[i] - px;
             double shift_y = ptsy[i] - py;
@@ -131,12 +133,13 @@ int main() {
 
         auto coeffs = polyfit(ptsx_transform, ptsy_transform, 3);
 
+        // in car coordinate now, shall use px=0 rather than px from global map coordinate. Same for psi which should be zero.
         double cte = polyeval(coeffs, 0);
-        double epsi =  psi - atan(coeffs[1] + 2 * px * coeffs[2] + 3 * coeffs[3] *pow(px,2));
+        double epsi = -atan(coeffs[1]);
 
         Eigen::VectorXd state(6);
 
-        state << 0, 0, 0, v, cte, epsi;
+        state << 0/*px*/, 0/*py*/, 0/*psi*/, v, cte, epsi;
 
         auto vars = mpc.Solve(state, coeffs);
 
@@ -167,7 +170,7 @@ int main() {
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
           // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
-          msgJson["steering_angle"] = -vars[0] / (deg2rad(25) * Lf);
+          msgJson["steering_angle"] = -vars[0] / (0.436332);
           msgJson["throttle"] = vars[1];
 
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system

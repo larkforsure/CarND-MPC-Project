@@ -6,8 +6,8 @@
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
-size_t N = 10;
-double dt = 0.08;
+size_t N = 12;
+double dt = 0.25;
 
 // This value assumes the model presented in the classroom is used.
 //
@@ -22,7 +22,7 @@ double dt = 0.08;
 const double Lf = 2.67;
 
 // baselines to caculate the cost
-const double ref_v    = 90;
+const double ref_v    = 100 * 0.44704;;
 const double ref_cte  = 0;
 const double ref_epsi = 0;
 
@@ -63,8 +63,8 @@ class FG_eval {
 
             // the cost based on the actuators, to minimize the magnitutes of actuators
             for (size_t t = 0; t < N - 1; t++) {
-                fg[0] += 10 * CppAD::pow(vars[delta_start + t], 2);
-                fg[0] += 10 * CppAD::pow(vars[acc_start + t], 2);
+                fg[0] += 100 * CppAD::pow(vars[delta_start + t], 2);
+                fg[0] += 0.5 * CppAD::pow(vars[acc_start + t], 2);
             }
 
             // the cost based on the continuous actuators, to minimize the variations between sequential actuations.
@@ -184,8 +184,8 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
     // degrees (values in radians).
     // NOTE: Feel free to change this to something else.
     for (size_t i = delta_start; i < acc_start; i++) {
-        vars_lowerbound[i] = -0.436332 * Lf;
-        vars_upperbound[i] = 0.436332 * Lf;
+        vars_lowerbound[i] = -0.436332;
+        vars_upperbound[i] = 0.436332;
     }
 
     // Acceleration/decceleration upper and lower limits.
