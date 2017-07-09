@@ -5,7 +5,7 @@ Self-Driving Car Engineer Nanodegree Program
 ## Reflections
 
 ### Recored video
-https://www.youtube.com/watch?v=fYPr2W1bCiU
+https://www.youtube.com/watch?v=Dn5dyTNQGXE 
 
 ### Model
 States:
@@ -25,7 +25,7 @@ Constraints:
 
 Costs:
   the cost based on the expect states
-    expect v(speed)=90
+    expect v(speed)=100*0.44704
     expect cte=0
     expect epsi=0
   the cost based on the actuators to minimize their magnitutes
@@ -35,8 +35,8 @@ Solution function:
   the target is to find actuators to minimize the costs while restricted by the constraints
 
 ### dt & N
-Set N=10, dt=0.08
-A larger N would give over-fit predications and go off the road around the complex corner; a smaller N would give under-fit otherwises ( i.e. doesn't fit the reference line at all )
+Set N=12, dt=0.25
+A larger N would give over-fitting predications and go off the road around the complex corners; a smaller N would give under-fitting otherwises ( i.e. doesn't fit the reference line at all )
 A smarller dt would give too much shaking
 
 ### Handle the latency
@@ -47,7 +47,7 @@ With the following equations, "move"(predicate) the received state to the values
     py = py + v * sin(psi) * latency;
     psi = psi - v*steer_value/Lf*latency; // simulator gives back negative steering!
     v += throttle_value*latency;
-
+    (v shall change from MPH to meter per second)
 
 ## Dependencies
 
